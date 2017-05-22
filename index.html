@@ -81,6 +81,11 @@
         ].join('\n'),
         language: 'javascript'
       });
+
+      document.addEventListener('message', function (e) {
+        console.log(JSON.stringify(e));
+        window.postMessage(JSON.stringify(editor));
+      });
     });
   </script>
 </body>
