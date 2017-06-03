@@ -57,36 +57,54 @@
   <title>Title</title>
 </head>
 <body>
-  <div id="container" style="width:auto;height:600px;border:1px solid grey"></div>
-  <script src="vs/loader.js"></script>
-  <script>
-    require.config({paths: {'vs': './vs'}});
+<div id="container" style="width:auto;height:600px;border:1px solid grey"></div>
+<script src="vs/loader.js"></script>
+<script>
+  if (!window.console) {
+    window.console = {
+      log: function() {
 
-    // Before loading vs/editor/editor.main, define a global MonacoEnvironment that overwrites
-    // the default worker url location (used when creating WebWorkers). The problem here is that
-    // HTML5 does not allow cross-domain web workers, so we need to proxy the instantion of
-    // a web worker through a same-domain script
-    //    window.MonacoEnvironment = {
-    //      getWorkerUrl: function(workerId, label) {
-    //        return 'monaco-editor-worker-loader-proxy.js';
-    //      },
-    //    };
+      }
+    }
+  }
 
-    require(['vs/editor/editor.main'], function() {
-      var editor = monaco.editor.create(document.getElementById('container'), {
-        value: [
-          'function x() {',
-          '\tconsole.log("Hello world!");',
-          '}'
-        ].join('\n'),
-        language: 'javascript'
-      });
+  window.console.log = function(options) {
+    var result = {
+      action: 'console',
+      data: options,
+    };
+    window.postMessage(JSON.stringify(result));
+  };
 
-      document.addEventListener('message', function (e) {
-        console.log(JSON.stringify(e));
-        window.postMessage(JSON.stringify(editor));
-      });
+  require.config({paths: {'vs': './vs'}});
+
+  // Before loading vs/editor/editor.main, define a global MonacoEnvironment that overwrites
+  // the default worker url location (used when creating WebWorkers). The problem here is that
+  // HTML5 does not allow cross-domain web workers, so we need to proxy the instantion of
+  // a web worker through a same-domain script
+  //    window.MonacoEnvironment = {
+  //      getWorkerUrl: function(workerId, label) {
+  //        return 'monaco-editor-worker-loader-proxy.js';
+  //      },
+  //    };
+
+  require(['vs/editor/editor.main'], function() {
+    window.editor = monaco.editor.create(document.getElementById('container'), {
+      value: [
+        'function x() {',
+        '\talert("Hello world!");',
+        '\tconsole.log("Hello world!");',
+        '}',
+        'x()'
+      ].join('\n'),
+      language: 'javascript'
     });
-  </script>
+
+    document.addEventListener('message', function (e) {
+      var value = window.editor.getValue();
+      eval(value);
+    });
+  });
+</script>
 </body>
 </html>
