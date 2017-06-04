@@ -114,11 +114,12 @@
     });
 
     document.addEventListener('message', function (event) {
-      if(event.action === 'runCode') {
+      var data = JSON.parse(event.data);
+      if(data.action === 'runCode') {
         eval(window.editor.getValue());
       }
 
-      if(event.action === 'resize') {
+      if(data.action === 'resize') {
         window.editor.layout();
       }
     });
