@@ -58,6 +58,7 @@
 </head>
 <body>
 <div id="container" style="width:auto;height:600px;border:1px solid grey"></div>
+<script src="libs/lodash.min.js"></script>
 <script src="vs/loader.js"></script>
 <script>
   if (!window.console) {
@@ -100,7 +101,7 @@
     window.editor = monaco.editor.create(document.getElementById('container'), {
       value: [
         'function x() {',
-        '\talert("Hello world!");',
+        '\talert(_.isObject({ hello: "world" }));',
         '\tconsole.log("Hello world!");',
         '}',
         'x()'
