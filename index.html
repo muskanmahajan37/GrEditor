@@ -100,9 +100,14 @@
       language: 'javascript'
     });
 
-    document.addEventListener('message', function (e) {
-      var value = window.editor.getValue();
-      eval(value);
+    document.addEventListener('message', function (event) {
+      if(event.action === 'runCode') {
+        eval(window.editor.getValue());
+      }
+
+      if(event.action === 'resize') {
+        window.editor.layout();
+      }
     });
   });
 </script>
