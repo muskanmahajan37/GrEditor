@@ -88,6 +88,14 @@
   //      },
   //    };
 
+  require.config({
+    'vs/nls' : {
+      availableLanguages: {
+        '*': 'zh-cn'
+      }
+    }
+  });
+
   require(['vs/editor/editor.main'], function() {
     window.editor = monaco.editor.create(document.getElementById('container'), {
       value: [
